@@ -30,7 +30,7 @@ public class DrumTrackList {
     //           35 <= instrument number <= ???
     // MODIFIES: this
     // EFFECTS: creates a new track for the instrument and adds it to the list of tracks
-    public void addTrack(Instrument instrument) {
+    public void addTrack(Instrument instrument) throws Exception {
         Track track = sequence.createTrack();
         tracks.add(track);
         instruments.add(instrument);
@@ -59,20 +59,15 @@ public class DrumTrackList {
     //           0 <= velocity <= 100
     //           0 <= tick
     // EFFECTS: returns a midi event with (a) the instrument, (b) the velocity of note hit, (c) time of event in ticks
-    private MidiEvent makeEvent(int instrumentNumber, boolean on, int tick) {
+    private MidiEvent makeEvent(int instrumentNumber, boolean on, int tick) throws Exception {
         MidiEvent event = null;
-
-        try {
-            ShortMessage a = new ShortMessage();
-            if (on) {
-                a.setMessage(144, 9, instrumentNumber, 100);
-            } else {
-                a.setMessage(128, 9, instrumentNumber, 100);
-            }
-            event = new MidiEvent(a, tick);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        ShortMessage a = new ShortMessage();
+        if (on) {
+            a.setMessage(144, 9, instrumentNumber, 100);
+        } else {
+            a.setMessage(128, 9, instrumentNumber, 100);
         }
+        event = new MidiEvent(a, tick);
 
         return event;
     }

@@ -7,17 +7,13 @@ public class DrumSequencer {
     private DrumTrackList drumSequence;
     private int beatsPerMinute;
 
-    public DrumSequencer(int beatsPerMinute, DrumTrackList trackList) throws MidiUnavailableException, InvalidMidiDataException {
+    public DrumSequencer(int beatsPerMinute, DrumTrackList trackList) throws MidiUnavailableException,
+            InvalidMidiDataException {
         this.beatsPerMinute = beatsPerMinute;
         drumSequence = trackList;
 
-        try {
-            sequencer = MidiSystem.getSequencer();
-            sequencer.open();
-        } catch (MidiUnavailableException e) {
-            throw new RuntimeException(e);
-        }
-
+        sequencer = MidiSystem.getSequencer();
+        sequencer.open();
         sequencer.setTempoInBPM(beatsPerMinute);
         sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
         sequencer.setSequence(drumSequence.getSequence());
@@ -27,7 +23,9 @@ public class DrumSequencer {
         sequencer.start();
     }
 
-    public void stopSequencer() { sequencer.stop(); }
+    public void stopSequencer() {
+        sequencer.stop();
+    }
 
     public int getBeatsPerMinute() {
         return this.beatsPerMinute;
@@ -37,7 +35,9 @@ public class DrumSequencer {
         this.beatsPerMinute = newBeatsPerMinute;
     }
 
-    public DrumTrackList getTrackList() { return this.drumSequence; }
+    public DrumTrackList getTrackList() {
+        return this.drumSequence;
+    }
 
     public String sequencerToString() {
         String printString = "BPM: " + String.valueOf(beatsPerMinute) + "\n";
@@ -46,5 +46,9 @@ public class DrumSequencer {
                     + "\nInstrument notes: " + String.valueOf(i.getInstrumentNotes()) + "\n\n";
         }
         return printString;
+    }
+
+    public Sequencer getSequencer() {
+        return this.sequencer;
     }
 }

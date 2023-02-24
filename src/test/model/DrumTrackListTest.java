@@ -33,13 +33,13 @@ public class DrumTrackListTest {
     }
 
     @Test
-    public void addTrackTest() {
+    public void addTrackTest() throws Exception {
         drumTrackList.addTrack(instrument1);
         assertEquals(drumTrackList.getInstruments().get(0), instrument1);
     }
 
     @Test
-    public void removeTrackTest() {
+    public void removeTrackTest() throws Exception {
         drumTrackList.addTrack(instrument1);
         drumTrackList.addTrack(instrument2);
         assertEquals(drumTrackList.getInstruments().size(), 2);
