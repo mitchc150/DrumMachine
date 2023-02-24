@@ -39,15 +39,6 @@ public class DrumSequencer {
         return this.drumSequence;
     }
 
-    public String sequencerToString() {
-        String printString = "BPM: " + String.valueOf(beatsPerMinute) + "\n";
-        for (Instrument i: this.drumSequence.getInstruments()) {
-            printString = printString + "Instrument number: " + String.valueOf(i.getInstrumentNumber())
-                    + "\nInstrument notes: " + String.valueOf(i.getInstrumentNotes()) + "\n\n";
-        }
-        return printString;
-    }
-
     public Sequencer getSequencer() {
         return this.sequencer;
     }

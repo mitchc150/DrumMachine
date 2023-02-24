@@ -2,6 +2,7 @@ package model;
 
 import javax.sound.midi.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DrumTrackList {
     private Sequence sequence;

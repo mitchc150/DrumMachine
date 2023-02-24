@@ -64,7 +64,8 @@ public class DrumMachineApp {
 
     // EFFECTS: displays the user's options
     private void displayMenu() {
-        System.out.println(sequence.sequencerToString());
+        printBPM();
+        printTrackList();
         System.out.println("\nSelect from:");
         System.out.println("\ta -> add tracks");
         System.out.println("\tr -> remove tracks");
@@ -137,9 +138,10 @@ public class DrumMachineApp {
     // EFFECTS: removes a track from the loop
     private void removeTrack() throws MidiUnavailableException, InvalidMidiDataException {
         System.out.println("Which track would you like to remove? Please type the instrument number.");
-        System.out.println(sequence.sequencerToString());
+        printTrackList();
         input.nextLine();
-        int removeChoice = Integer.parseInt(input.nextLine());
+        int removeChoice = Integer.parseInt(input.nextLine()) - 1;
+        System.out.println("Removing instrument " + removeChoice + " from the tracklist.");
         tracks.removeTrack(removeChoice);
         sequence = new DrumSequencer(bpm, tracks);
     }
@@ -159,8 +161,23 @@ public class DrumMachineApp {
     // MODIFIES: this
     // EFFECTS: change the BPM of the drum loop
     private void changeBPM() {
+        System.out.println("Current BPM is " + bpm + "\n");
         System.out.println("Enter the new value you would like for the BPM: ");
         this.bpm = Integer.parseInt(input.nextLine());
         sequence.setBeatsPerMinute(bpm);
+    }
+
+    private void printTrackList() {
+        for (int i = 0; i < tracks.getInstruments().size(); i++) {
+            System.out.println("Instrument number: " + (i + 1));
+            System.out.println("MIDI code of instrument: " + tracks.getInstruments().get(i).getInstrumentNumber());
+            System.out.println("Instrument name: " + INSTRUMENT_LIST.get(i + 35));
+            System.out.println("Instrument notes: "
+                    + Arrays.toString(tracks.getInstruments().get(i).getInstrumentNotes()) + "\n");
+        }
+    }
+
+    private void printBPM() {
+        System.out.println("BPM: " + bpm);
     }
 }
