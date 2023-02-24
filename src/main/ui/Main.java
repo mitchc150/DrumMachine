@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws InvalidMidiDataException, MidiUnavailableException {
+    public static void main(String[] args) throws InvalidMidiDataException, MidiUnavailableException, InterruptedException {
         new DrumMachineApp();
     }
 }
