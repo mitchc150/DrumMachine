@@ -26,15 +26,14 @@ public class DrumMachineApp {
     private int bpm;
 
     // EFFECTS: runs the drum machine application
-    public DrumMachineApp() throws Exception, MidiUnavailableException, InvalidMidiDataException, InterruptedException {
+    public DrumMachineApp() throws Exception {
         runDrumMachine();
     }
 
 
-    private void runDrumMachine() throws MidiUnavailableException, InvalidMidiDataException, InterruptedException,
-            Exception {
+    private void runDrumMachine() throws Exception {
         boolean keepGoing = true;
-        String command = null;
+        String command;
 
         init();
 
@@ -77,8 +76,7 @@ public class DrumMachineApp {
 
     // MODIFIES: this
     // EFFECTS: processes user's command
-    private void processCommand(String command) throws MidiUnavailableException, InvalidMidiDataException, Exception,
-            InterruptedException {
+    private void processCommand(String command) throws Exception {
         switch (command) {
             case "a":
                 stopLoop();
@@ -106,7 +104,7 @@ public class DrumMachineApp {
 
     // MODIFIES: this
     // EFFECTS: adds track to the loop
-    public void addTrack() throws MidiUnavailableException, InvalidMidiDataException, Exception {
+    public void addTrack() throws Exception {
 
         int i = 1;
 
@@ -148,7 +146,7 @@ public class DrumMachineApp {
 
     // MODIFIES: this
     // EFFECTS: plays the drum loop
-    private void playLoop() throws InterruptedException {
+    private void playLoop()  {
         sequence.playSequencer();
     }
 

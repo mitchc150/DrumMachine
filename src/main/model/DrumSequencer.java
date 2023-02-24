@@ -3,8 +3,8 @@ package model;
 import javax.sound.midi.*;
 
 public class DrumSequencer {
-    private Sequencer sequencer;
-    private DrumTrackList drumSequence;
+    private final Sequencer sequencer;
+    private final DrumTrackList drumSequence;
     private int beatsPerMinute;
 
     public DrumSequencer(int beatsPerMinute, DrumTrackList trackList) throws MidiUnavailableException,

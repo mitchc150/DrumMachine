@@ -2,12 +2,11 @@ package model;
 
 import javax.sound.midi.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class DrumTrackList {
-    private Sequence sequence;
-    private ArrayList<Instrument> instruments;
-    private ArrayList<Track> tracks;
+    private final Sequence sequence;
+    private final ArrayList<Instrument> instruments;
+    private final ArrayList<Track> tracks;
 
     public DrumTrackList() throws InvalidMidiDataException {
         sequence = new Sequence(Sequence.PPQ, 4);
@@ -61,7 +60,7 @@ public class DrumTrackList {
     //           0 <= tick
     // EFFECTS: returns a midi event with (a) the instrument, (b) the velocity of note hit, (c) time of event in ticks
     private MidiEvent makeEvent(int instrumentNumber, boolean on, int tick) throws Exception {
-        MidiEvent event = null;
+        MidiEvent event;
         ShortMessage a = new ShortMessage();
         if (on) {
             a.setMessage(144, 9, instrumentNumber, 100);
