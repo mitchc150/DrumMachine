@@ -15,12 +15,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DrumTrackListTest {
     Instrument instrument1;
     Instrument instrument2;
+    Instrument instrument3;
     DrumTrackList drumTrackList;
 
     @BeforeEach
     public void init() throws InvalidMidiDataException {
         instrument1 = new Instrument(15, "x-x-x-x-x-x");
         instrument2 = new Instrument(12, "-x-x-x-x-x-x");
+        instrument3 = new Instrument(10, "------------");
         drumTrackList = new DrumTrackList();
     }
 
@@ -28,14 +30,20 @@ public class DrumTrackListTest {
     public void constructorTest() {
         assertEquals(drumTrackList.getSequence().getDivisionType(), Sequence.PPQ);
         assertEquals(drumTrackList.getSequence().getResolution(), 4);
-        drumTrackList.getTracks().isEmpty();
-        drumTrackList.getInstruments().isEmpty();
+        assertTrue(drumTrackList.getTracks().isEmpty());
+        assertTrue(drumTrackList.getInstruments().isEmpty());
     }
 
     @Test
     public void addTrackTest() throws Exception {
         drumTrackList.addTrack(instrument1);
         assertEquals(drumTrackList.getInstruments().get(0), instrument1);
+
+        drumTrackList.addTrack(instrument2);
+        assertEquals(drumTrackList.getInstruments().get(1), instrument2);
+
+        drumTrackList.addTrack(instrument3);
+        assertEquals(drumTrackList.getInstruments().get(2), instrument3);
     }
 
     @Test

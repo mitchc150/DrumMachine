@@ -23,8 +23,8 @@ public class DrumSequencerTest {
     }
 
     @Test
-    public void constructorTest() {
-        assertEquals(sequence.getBeatsPerMinute(), 120);
+    public void constructorTest() throws MidiUnavailableException, InvalidMidiDataException {
+        sequence = new DrumSequencer(120, tracks);
         assertEquals(sequence.getTrackList(), tracks);
         assertTrue(sequence.getSequencer().isOpen());
         assertEquals(sequence.getSequencer().getTempoInBPM(), 120);
@@ -44,6 +44,7 @@ public class DrumSequencerTest {
         sequence.playSequencer();
         Sequencer sequencer = sequence.getSequencer();
         assertTrue(sequencer.isRunning());
+        sequence.stopSequencer();
     }
 
     @Test
@@ -60,5 +61,4 @@ public class DrumSequencerTest {
         tracks.addTrack(instrument);
         assertEquals(sequence.getTrackList(), tracks);
     }
-
 }

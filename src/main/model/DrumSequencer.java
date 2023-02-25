@@ -12,11 +12,11 @@ public class DrumSequencer {
         this.beatsPerMinute = beatsPerMinute;
         drumSequence = trackList;
 
-        sequencer = MidiSystem.getSequencer();
-        sequencer.open();
-        sequencer.setTempoInBPM(beatsPerMinute);
-        sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
-        sequencer.setSequence(drumSequence.getSequence());
+        //sequencer = MidiSystem.getSequencer();
+        //sequencer.open();
+        //sequencer.setTempoInBPM(beatsPerMinute);
+        //sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+        //sequencer.setSequence(drumSequence.getSequence());
     }
 
     public void playSequencer() {
