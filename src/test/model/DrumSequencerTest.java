@@ -23,8 +23,7 @@ public class DrumSequencerTest {
     }
 
     @Test
-    public void constructorTest() throws MidiUnavailableException, InvalidMidiDataException {
-        sequence = new DrumSequencer(120, tracks);
+    public void constructorTest() {
         assertEquals(sequence.getTrackList(), tracks);
         assertTrue(sequence.getSequencer().isOpen());
         assertEquals(sequence.getSequencer().getTempoInBPM(), 120);

@@ -40,7 +40,7 @@ public class DrumTrackList {
 
             if (i == 'x') {
                 track.add(makeEvent(instrument.getInstrumentNumber(), true, n));
-            } else if (i == '-') {
+            } else {
                 track.add(makeEvent(instrument.getInstrumentNumber(), false, n));
             }
             n += 1;
