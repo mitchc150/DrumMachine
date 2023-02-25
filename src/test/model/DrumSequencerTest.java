@@ -26,12 +26,17 @@ public class DrumSequencerTest {
     public void constructorTest() {
         assertEquals(sequence.getBeatsPerMinute(), 120);
         assertEquals(sequence.getTrackList(), tracks);
+        assertTrue(sequence.getSequencer().isOpen());
+        assertEquals(sequence.getSequencer().getTempoInBPM(), 120);
+        assertEquals(sequence.getSequencer().getLoopCount(), Sequencer.LOOP_CONTINUOUSLY);
+        assertEquals(sequence.getSequencer().getSequence(), tracks.getSequence());
     }
 
     @Test
     public void setBPMTest() {
         sequence.setBeatsPerMinute(12);
         assertEquals(sequence.getBeatsPerMinute(), 12);
+        assertEquals(sequence.getSequencer().getTempoInBPM(), 12);
     }
 
     @Test

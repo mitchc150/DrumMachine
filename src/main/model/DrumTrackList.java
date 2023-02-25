@@ -36,7 +36,7 @@ public class DrumTrackList {
         instruments.add(instrument);
 
         int n = 1;
-        for (char i: instrument.getInstrumentNotes()) {
+        for (char i : instrument.getInstrumentNotes()) {
 
             if (i == 'x') {
                 track.add(makeEvent(instrument.getInstrumentNumber(), true, n));

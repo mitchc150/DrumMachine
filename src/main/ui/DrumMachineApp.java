@@ -165,6 +165,7 @@ public class DrumMachineApp {
         sequence.setBeatsPerMinute(bpm);
     }
 
+    // EFFECTS: print information about the tracks, including (a) number, (b) midi code, (c) name, and (d) notes
     private void printTrackList() {
         for (int i = 0; i < tracks.getInstruments().size(); i++) {
             System.out.println("Instrument number: " + (i + 1));
@@ -175,6 +176,7 @@ public class DrumMachineApp {
         }
     }
 
+    // EFFECTS: print information about BPM
     private void printBPM() {
         System.out.println("BPM: " + bpm);
     }
