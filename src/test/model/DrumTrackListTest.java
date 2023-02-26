@@ -23,7 +23,7 @@ public class DrumTrackListTest {
         instrument1 = new Instrument(15, "x-x-x-x-x-x");
         instrument2 = new Instrument(12, "-x-x-x-x-x-x");
         instrument3 = new Instrument(10, "------------");
-        drumTrackList = new DrumTrackList();
+        drumTrackList = new DrumTrackList(120);
     }
 
     @Test
@@ -32,6 +32,13 @@ public class DrumTrackListTest {
         assertEquals(drumTrackList.getSequence().getResolution(), 4);
         assertTrue(drumTrackList.getTracks().isEmpty());
         assertTrue(drumTrackList.getInstruments().isEmpty());
+        assertEquals(drumTrackList.getBPM(), 120);
+    }
+
+    @Test
+    public void setBPMTest() {
+        drumTrackList.setBPM(90);
+        assertEquals(drumTrackList.getBPM(), 90);
     }
 
     @Test

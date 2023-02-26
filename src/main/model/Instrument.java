@@ -1,8 +1,10 @@
 package model;
 
+// Represents a particular instrument track, with an instrument number, instrument name and notes to be played
 public class Instrument {
     private int instrumentNumber;
     private char[] instrumentNotes;
+
 
     public Instrument(int instrumentNumber, String instrumentNotes) {
         this.instrumentNotes = instrumentNotes.toCharArray();

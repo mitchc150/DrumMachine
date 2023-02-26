@@ -1,13 +1,14 @@
 package ui;
 
 import model.*;
+import model.Instrument;
 
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+// Drum machine application
 public class DrumMachineApp {
     private static final List<String> INSTRUMENT_LIST = Arrays.asList("Acoustic Bass Drum",
             "Bass Drum 1", "Side Stick", "Acoustic Snare", "Hand Clap", "Electric Snare",
@@ -21,16 +22,15 @@ public class DrumMachineApp {
             "Mute Cuica", "Open Cuica", "Mute Triangle", "Open Triangle");
 
     private DrumTrackList tracks;
-    private DrumSequencer sequence;
+    private Sequencer sequencer;
     private Scanner input;
-    private int bpm;
 
-    // EFFECTS: runs the drum machine application
+    // EFFECTS: builds a new Drum Machine by running the application
     public DrumMachineApp() throws Exception {
         runDrumMachine();
     }
 
-
+    // EFFECTS:
     private void runDrumMachine() throws Exception {
         boolean keepGoing = true;
         String command;
@@ -54,11 +54,19 @@ public class DrumMachineApp {
     // EFFECTS: initializes the sequencer, asking for user input for the BPM
     private void init() throws MidiUnavailableException, InvalidMidiDataException {
         input = new Scanner(System.in);
-        tracks = new DrumTrackList();
-
         System.out.println("Enter the bpm you would like for the drum machine");
-        bpm = Integer.parseInt(input.nextLine());
-        sequence = new DrumSequencer(bpm, tracks);
+        tracks = new DrumTrackList(Integer.parseInt(input.nextLine()));
+        initSequencer(tracks);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: initializes the sequencer with updated tracks
+    private void initSequencer(DrumTrackList tracks) throws MidiUnavailableException, InvalidMidiDataException {
+        sequencer = MidiSystem.getSequencer();
+        sequencer.open();
+        sequencer.setTempoInBPM(tracks.getBPM());
+        sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+        sequencer.setSequence(tracks.getSequence());
     }
 
     // EFFECTS: displays the user's options
@@ -74,8 +82,8 @@ public class DrumMachineApp {
         System.out.println("\tq -> quit");
     }
 
-    // MODIFIES: this
-    // EFFECTS: processes user's command
+    // REQUIRES: user input is valid
+    // EFFECTS: processes user's input
     private void processCommand(String command) throws Exception {
         switch (command) {
             case "a":
@@ -105,9 +113,7 @@ public class DrumMachineApp {
     // MODIFIES: this
     // EFFECTS: adds track to the loop
     public void addTrack() throws Exception {
-
         int i = 1;
-
         for (String str : INSTRUMENT_LIST) {
             if (i % 5 != 1) {
                 System.out.print(str + "          ");
@@ -117,60 +123,55 @@ public class DrumMachineApp {
             i += 1;
         }
         input.nextLine();
-
         System.out.println("Choose an instrument to play");
         String instrumentChoice = input.nextLine();
-
         int instrumentNum = INSTRUMENT_LIST.indexOf(instrumentChoice) + 35;
-
         System.out.println("Enter what you would like the instrument to play. 'x' is a note, and '-' is a rest.");
         String noteChoice = input.nextLine();
-
         Instrument choice = new Instrument(instrumentNum, noteChoice);
-
         tracks.addTrack(choice);
-        sequence = new DrumSequencer(bpm, tracks);
     }
 
     // MODIFIES: this
     // EFFECTS: removes a track from the loop
-    private void removeTrack() throws MidiUnavailableException, InvalidMidiDataException {
+    private void removeTrack()  {
         System.out.println("Which track would you like to remove? Please type the instrument number.");
         printTrackList();
         input.nextLine();
-        int removeChoice = Integer.parseInt(input.nextLine()) - 1;
+        int removeChoice = Integer.parseInt(input.nextLine());
         System.out.println("Removing instrument " + removeChoice + " from the tracklist.");
-        tracks.removeTrack(removeChoice);
-        sequence = new DrumSequencer(bpm, tracks);
+        tracks.removeTrack(removeChoice - 1);
     }
 
     // MODIFIES: this
     // EFFECTS: plays the drum loop
-    private void playLoop()  {
-        sequence.playSequencer();
+    private void playLoop() throws MidiUnavailableException, InvalidMidiDataException {
+        initSequencer(this.tracks);
+        sequencer.start();
     }
 
     // MODIFIES: this
     // EFFECTS: stops the drum loop
     private void stopLoop() {
-        sequence.stopSequencer();
+        sequencer.stop();
     }
 
     // MODIFIES: this
     // EFFECTS: change the BPM of the drum loop
     private void changeBPM() {
-        System.out.println("Current BPM is " + bpm + "\n");
+        System.out.println("Current BPM is " + tracks.getBPM() + "\n");
         System.out.println("Enter the new value you would like for the BPM: ");
-        this.bpm = Integer.parseInt(input.nextLine());
-        sequence.setBeatsPerMinute(bpm);
+        input.nextLine();
+        tracks.setBPM(Integer.parseInt(input.nextLine()));
     }
 
     // EFFECTS: print information about the tracks, including (a) number, (b) midi code, (c) name, and (d) notes
     private void printTrackList() {
         for (int i = 0; i < tracks.getInstruments().size(); i++) {
             System.out.println("Instrument number: " + (i + 1));
-            System.out.println("MIDI code of instrument: " + tracks.getInstruments().get(i).getInstrumentNumber());
-            System.out.println("Instrument name: " + INSTRUMENT_LIST.get(i + 35));
+            int midi = tracks.getInstruments().get(i).getInstrumentNumber();
+            System.out.println("MIDI code of instrument: " + midi);
+            System.out.println("Instrument name: " + INSTRUMENT_LIST.get(midi - 35));
             System.out.println("Instrument notes: "
                     + Arrays.toString(tracks.getInstruments().get(i).getInstrumentNotes()) + "\n");
         }
@@ -178,6 +179,6 @@ public class DrumMachineApp {
 
     // EFFECTS: print information about BPM
     private void printBPM() {
-        System.out.println("BPM: " + bpm);
+        System.out.println("BPM: " + tracks.getBPM());
     }
 }
