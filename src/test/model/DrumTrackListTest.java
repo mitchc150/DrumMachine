@@ -20,9 +20,9 @@ public class DrumTrackListTest {
 
     @BeforeEach
     public void init() throws InvalidMidiDataException {
-        instrument1 = new Instrument(15, "x-x-x-x-x-x");
-        instrument2 = new Instrument(12, "-x-x-x-x-x-x");
-        instrument3 = new Instrument(10, "------------");
+        instrument1 = new Instrument(45, "x-x-x-x-x-x");
+        instrument2 = new Instrument(35, "-x-x-x-x-x-x");
+        instrument3 = new Instrument(60, "------------");
         drumTrackList = new DrumTrackList(120);
     }
 
