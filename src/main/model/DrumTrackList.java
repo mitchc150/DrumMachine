@@ -62,11 +62,13 @@ public class DrumTrackList {
     // MODIFIES: this
     // EFFECTS: removes an instrument from the track
     public void removeTrack(int instrumentNumber) {
+        Track track = tracks.get(instrumentNumber);
         tracks.remove(instrumentNumber);
         instruments.remove(instrumentNumber);
+        sequence.deleteTrack(track);
     }
 
-    // REQUIRES: 0 <= instrumentNumber <= ???
+    // REQUIRES: 35 <= instrumentNumber <= 81
     //           0 <= velocity <= 100
     //           0 <= tick
     // EFFECTS: returns a midi event with (a) the instrument, (b) the velocity of note hit, (c) time of event in ticks

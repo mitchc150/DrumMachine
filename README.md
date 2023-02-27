@@ -17,11 +17,9 @@ me on rhythm, to fill out the sound and to help with songwriting. I also really 
 find it fun to create new patterns on the app.
 
 ## User Stories
-- As a user, I want to be able to add or remove an instrument to the track
-- As a user, I want to be able to choose which beats to hear each instrument on
+- As a user, I want to be able to add an instrument with its notes to be played to the track
+- As a user, I want to be able to delete an instrument from the track
+- As a user, I want to be able to modify the notes being played each instrument
+- As a user, I want to be able to change the voice of each instrument (change the MIDI sound being played)
+- As a user, I want to be able to change the tempo of the beat
 - As a user, I want to be able to play the beat and hear it loop repeatedly
-- As a user, I want to be able to change the tempo of the beat and hear what results
-- As a user, I want to be able to view a list of beats I have created in the past and choose which to open
-- STRETCH GOAL: As a user, I want to be able to open a piano roll GUI and add non-percussion instruments to make songs
-- STRETCH GOAL: As a user, I want to be able to change the time signature of my beat
-- STRETCH GOAL: As a user, I want to be able to add my own sounds into the program and use them

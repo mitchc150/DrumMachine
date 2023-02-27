@@ -12,8 +12,8 @@ import java.util.Scanner;
 public class DrumMachineApp {
     private static final List<String> INSTRUMENT_LIST = Arrays.asList("Acoustic Bass Drum",
             "Bass Drum 1", "Side Stick", "Acoustic Snare", "Hand Clap", "Electric Snare",
-            "Low Floor Tom", "Closed Hi-Hat", "High Floor Tom", "Pedal Hi-Hat", "Open Hi-Hat",
-            "Low Mid-Tom", "Hi-Mid Tom", "Crash Cymbal 1", "High Tom", "Ride Cymbal 1",
+            "Low Floor Tom", "Closed Hi-Hat", "High Floor Tom", "Pedal Hi-Hat", "Low Tom",
+            "Open Hi-Hat", "Low Mid-Tom", "Hi-Mid Tom", "Crash Cymbal 1", "High Tom", "Ride Cymbal 1",
             "Chinese Cymbal", "Ride Bell", "Tambourine", "Splash Cymbal", "Cowbell",
             "Crash Cymbal 2", "Vibraslap", "Ride Cymbal 2", "Hi Bongo", "Low Bongo",
             "Mute Hi Conga", "Open Hi Conga", "Low Conga", "High Timbale", "Low Timbale",
@@ -30,7 +30,8 @@ public class DrumMachineApp {
         runDrumMachine();
     }
 
-    // EFFECTS:
+    // MODIFIES: this
+    // EFFECTS: processes user input
     private void runDrumMachine() throws Exception {
         boolean keepGoing = true;
         String command;
@@ -39,11 +40,13 @@ public class DrumMachineApp {
 
         while (keepGoing) {
             displayMenu();
-            command = input.next();
+            command = input.nextLine();
             command = command.toLowerCase();
 
             if (command.equals("q")) {
+                System.out.println("Goodbye!");
                 keepGoing = false;
+                System.exit(0);
             } else {
                 processCommand(command);
             }
@@ -74,24 +77,25 @@ public class DrumMachineApp {
         printBPM();
         printTrackList();
         System.out.println("\nSelect from:");
-        System.out.println("\ta -> add tracks");
-        System.out.println("\tr -> remove tracks");
+        System.out.println("\ta -> add a track");
+        System.out.println("\tr -> remove a track");
+        System.out.println("\tm -> modify a track");
         System.out.println("\tp -> play the loop");
         System.out.println("\ts -> stop the loop");
         System.out.println("\tb -> change the bpm");
         System.out.println("\tq -> quit");
     }
 
-    // REQUIRES: user input is valid
-    // EFFECTS: processes user's input
+    // EFFECTS: processes user's commands
     private void processCommand(String command) throws Exception {
         switch (command) {
+            case "m":
+                changeTrack();
+                break;
             case "a":
-                stopLoop();
                 addTrack();
                 break;
             case "r":
-                stopLoop();
                 removeTrack();
                 break;
             case "p":
@@ -101,7 +105,6 @@ public class DrumMachineApp {
                 stopLoop();
                 break;
             case "b":
-                stopLoop();
                 changeBPM();
                 break;
             default:
@@ -113,31 +116,45 @@ public class DrumMachineApp {
     // MODIFIES: this
     // EFFECTS: adds track to the loop
     public void addTrack() throws Exception {
-        int i = 1;
-        for (String str : INSTRUMENT_LIST) {
-            if (i % 5 != 1) {
-                System.out.print(str + "          ");
-            } else {
-                System.out.println(str);
-            }
-            i += 1;
-        }
-        input.nextLine();
-        System.out.println("Choose an instrument to play");
-        String instrumentChoice = input.nextLine();
-        int instrumentNum = INSTRUMENT_LIST.indexOf(instrumentChoice) + 35;
-        System.out.println("Enter what you would like the instrument to play. 'x' is a note, and '-' is a rest.");
-        String noteChoice = input.nextLine();
-        Instrument choice = new Instrument(instrumentNum, noteChoice);
+        stopLoop();
+        int instrumentNum = addInstrumentNum();
+        String instrumentNotes = addInstrumentNotes();
+        Instrument choice = new Instrument(instrumentNum, instrumentNotes);
         tracks.addTrack(choice);
+    }
+
+    // EFFECTS: returns a number to create a new instrument
+    public int addInstrumentNum() {
+        int n = 1;
+        for (String str : INSTRUMENT_LIST) {
+            System.out.print(str);
+            if ((n % 4) != 0) {
+                for (int i = 0; i < (25 - str.length()); i++) {
+                    System.out.print(" ");
+                }
+            } else {
+                System.out.println(" ");
+            }
+            n += 1;
+        }
+        System.out.println("\n");
+        System.out.println("Choose an instrument");
+        String instrumentChoice = input.nextLine();
+        return INSTRUMENT_LIST.indexOf(instrumentChoice) + 35;
+    }
+
+    // EFFECTS: returns notes to create a new instrument
+    public String addInstrumentNotes() {
+        System.out.println("Enter what you would like the instrument to play. 'x' is a note, and '-' is a rest.");
+        return input.nextLine();
     }
 
     // MODIFIES: this
     // EFFECTS: removes a track from the loop
     private void removeTrack()  {
+        stopLoop();
         System.out.println("Which track would you like to remove? Please type the instrument number.");
         printTrackList();
-        input.nextLine();
         int removeChoice = Integer.parseInt(input.nextLine());
         System.out.println("Removing instrument " + removeChoice + " from the tracklist.");
         tracks.removeTrack(removeChoice - 1);
@@ -159,21 +176,48 @@ public class DrumMachineApp {
     // MODIFIES: this
     // EFFECTS: change the BPM of the drum loop
     private void changeBPM() {
+        stopLoop();
         System.out.println("Current BPM is " + tracks.getBPM() + "\n");
         System.out.println("Enter the new value you would like for the BPM: ");
-        input.nextLine();
         tracks.setBPM(Integer.parseInt(input.nextLine()));
+    }
+
+    // MODIFIES: this
+    // EFFECTS: prompts user to modify a given track
+    private void changeTrack() throws Exception {
+        stopLoop();
+        System.out.println("Select the instrument number of the track you would like to modify:");
+        printTrackList();
+        int choice = Integer.parseInt(input.nextLine());
+        System.out.println("You have selected instrument " + choice);
+        Instrument instrumentToModify = tracks.getInstruments().get(choice - 1);
+        tracks.removeTrack(choice - 1);
+        System.out.println("Please choose what you would like to modify:");
+        System.out.println("\ti for instrument type");
+        System.out.println("\tn for instrument notes");
+        String choice2 = input.nextLine();
+        if (choice2.equals("i")) {
+            int newNum = addInstrumentNum();
+            instrumentToModify.setInstrument(newNum);
+        } else {
+            String newNotes = addInstrumentNotes();
+            instrumentToModify.setInstrumentNotes(newNotes);
+        }
+        tracks.addTrack(instrumentToModify);
     }
 
     // EFFECTS: print information about the tracks, including (a) number, (b) midi code, (c) name, and (d) notes
     private void printTrackList() {
-        for (int i = 0; i < tracks.getInstruments().size(); i++) {
-            System.out.println("Instrument number: " + (i + 1));
-            int midi = tracks.getInstruments().get(i).getInstrumentNumber();
-            System.out.println("MIDI code of instrument: " + midi);
-            System.out.println("Instrument name: " + INSTRUMENT_LIST.get(midi - 35));
-            System.out.println("Instrument notes: "
-                    + Arrays.toString(tracks.getInstruments().get(i).getInstrumentNotes()) + "\n");
+        System.out.println();
+        System.out.println("INSTRUMENTS: ");
+        int i = 1;
+        for (Instrument instr : tracks.getInstruments()) {
+            System.out.println();
+            System.out.println("\tInstrument number: " + i);
+            System.out.println("\tMIDI code of instrument: " + instr.getInstrumentNumber());
+            System.out.println("\tInstrument name: " + instr.getInstrumentName());
+            System.out.println("\tInstrument notes: " + Arrays.toString(instr.getInstrumentNotes()));
+            i += 1;
         }
     }
 
