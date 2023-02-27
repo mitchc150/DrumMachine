@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 
 // Drum machine application
+// MODELLED ON TELLER APPLICATION FROM edX MODULE
 public class DrumMachineApp {
     private static final List<String> INSTRUMENT_LIST = Arrays.asList("Acoustic Bass Drum",
             "Bass Drum 1", "Side Stick", "Acoustic Snare", "Hand Clap", "Electric Snare",

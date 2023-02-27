@@ -72,6 +72,7 @@ public class DrumTrackList {
     //           0 <= velocity <= 100
     //           0 <= tick
     // EFFECTS: returns a midi event with (a) the instrument, (b) the velocity of note hit, (c) time of event in ticks
+    // MODELLED ON / INSPIRED BY FUNCTIONALITY FOUND ON EXTERNAL SOURCE: https://www.geeksforgeeks.org/java-midi/
     private MidiEvent makeEvent(int instrumentNumber, boolean on, int tick) throws Exception {
         MidiEvent event;
         ShortMessage a = new ShortMessage();
