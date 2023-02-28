@@ -12,6 +12,7 @@ import org.json.*;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+// Represents a reader to load program state from JSON file
 public class JsonReader {
     private String source;
 
@@ -48,7 +49,7 @@ public class JsonReader {
     }
 
     // MODIFIES: tracks
-    // EFFECTS: parses thingies from JSON object and adds them to workroom
+    // EFFECTS: parses thingies from JSON object and adds them to tracklist
     private void addInstruments(DrumTrackList tracks, JSONObject jsonObject) throws Exception {
         JSONArray jsonArray = jsonObject.getJSONArray("instruments");
         for (Object json : jsonArray) {
@@ -58,7 +59,7 @@ public class JsonReader {
     }
 
     // MODIFIES: tracks
-    // EFFECTS: parses instrument from JSON object and adds it to workroom
+    // EFFECTS: parses instrument from JSON object and adds it to tracklist
     private void addInstrument(DrumTrackList tracks, JSONObject jsonObject) throws Exception {
         int instrumentNumber = jsonObject.getInt("number");
         String instrumentNotes = jsonObject.getString("notes");
