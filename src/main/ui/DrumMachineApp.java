@@ -2,11 +2,18 @@ package ui;
 
 import model.*;
 import model.Instrument;
+import persistence.JsonReader;
 
 import javax.sound.midi.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import persistence.JsonWriter;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 
 // Drum machine application
 // MODELLED ON TELLER APPLICATION FROM edX MODULE
@@ -25,6 +32,12 @@ public class DrumMachineApp {
     private DrumTrackList tracks;
     private Sequencer sequencer;
     private Scanner input;
+
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
+
+    private static final String JSON_STORE = "./data/tracks.json";
+
 
     // EFFECTS: builds a new Drum Machine by running the application
     public DrumMachineApp() throws Exception {
@@ -61,6 +74,8 @@ public class DrumMachineApp {
         System.out.println("Enter the bpm you would like for the drum machine");
         tracks = new DrumTrackList(Integer.parseInt(input.nextLine()));
         initSequencer(tracks);
+        jsonReader = new JsonReader(JSON_STORE);
+        jsonWriter = new JsonWriter(JSON_STORE);
     }
 
     // MODIFIES: this
@@ -84,10 +99,13 @@ public class DrumMachineApp {
         System.out.println("\tp -> play the loop");
         System.out.println("\ts -> stop the loop");
         System.out.println("\tb -> change the bpm");
+        System.out.println("\tk -> save the current beat");
+        System.out.println("\tl -> load a previous beat");
         System.out.println("\tq -> quit");
     }
 
     // EFFECTS: processes user's commands
+    @SuppressWarnings("methodlength")
     private void processCommand(String command) throws Exception {
         switch (command) {
             case "m":
@@ -107,6 +125,12 @@ public class DrumMachineApp {
                 break;
             case "b":
                 changeBPM();
+                break;
+            case "k":
+                saveTrackList();
+                break;
+            case "l":
+                loadTrackList();
                 break;
             default:
                 System.out.println("Selection not valid");
@@ -207,6 +231,32 @@ public class DrumMachineApp {
         tracks.addTrack(instrumentToModify);
     }
 
+    // EFFECTS: saves the tracklist to a file
+    private void saveTrackList() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(tracks);
+            jsonWriter.close();
+            System.out.println("Saved current beat to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads a tracklist from the JSON file
+    // MODIFIES: this
+    // EFFECTS: loads workroom from file
+    private void loadTrackList() throws Exception {
+        try {
+            tracks = jsonReader.read();
+            System.out.println("Loaded tracklist from  " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
+    }
+
+
     // EFFECTS: print information about the tracks, including (a) number, (b) midi code, (c) name, and (d) notes
     private void printTrackList() {
         System.out.println();
@@ -217,7 +267,7 @@ public class DrumMachineApp {
             System.out.println("\tInstrument number: " + i);
             System.out.println("\tMIDI code of instrument: " + instr.getInstrumentNumber());
             System.out.println("\tInstrument name: " + instr.getInstrumentName());
-            System.out.println("\tInstrument notes: " + Arrays.toString(instr.getInstrumentNotes()));
+            System.out.println("\tInstrument notes: " + Arrays.toString(instr.getInstrumentNotesList()));
             i += 1;
         }
     }

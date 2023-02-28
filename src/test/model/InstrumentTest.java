@@ -20,22 +20,22 @@ class InstrumentTest {
 
     @Test
     public void constructorTest() {
-        assertArrayEquals(instrument1.getInstrumentNotes(), "x-x-x-x-x".toCharArray());
+        assertArrayEquals(instrument1.getInstrumentNotesList(), "x-x-x-x-x".toCharArray());
         assertEquals(instrument1.getInstrumentNumber(), 35);
         assertEquals(instrument1.getInstrumentName(), "Acoustic Bass Drum");
-        assertArrayEquals(instrument2.getInstrumentNotes(), "-x-x-x-x-x-x".toCharArray());
+        assertArrayEquals(instrument2.getInstrumentNotesList(), "-x-x-x-x-x-x".toCharArray());
         assertEquals(instrument2.getInstrumentNumber(), 81);
         assertEquals(instrument2.getInstrumentName(), "Open Triangle");
-        assertArrayEquals(instrument3.getInstrumentNotes(), "x-x-x-x".toCharArray());
+        assertArrayEquals(instrument3.getInstrumentNotesList(), "x-x-x-x".toCharArray());
         assertEquals(instrument3.getInstrumentNumber(), 50);
         assertEquals(instrument3.getInstrumentName(), "High Tom");
     }
 
     @Test
     public void setNotesTest() {
-        assertArrayEquals(instrument1.getInstrumentNotes(), "x-x-x-x-x".toCharArray());
+        assertArrayEquals(instrument1.getInstrumentNotesList(), "x-x-x-x-x".toCharArray());
         instrument1.setInstrumentNotes("-x-x-x-x-x-x");
-        assertArrayEquals(instrument1.getInstrumentNotes(), "-x-x-x-x-x-x".toCharArray());
+        assertArrayEquals(instrument1.getInstrumentNotesList(), "-x-x-x-x-x-x".toCharArray());
     }
 
     @Test

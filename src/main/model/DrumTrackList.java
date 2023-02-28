@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import javax.sound.midi.*;
 import java.util.ArrayList;
 
@@ -47,7 +50,7 @@ public class DrumTrackList {
         instruments.add(instrument);
 
         int n = 1;
-        for (char i : instrument.getInstrumentNotes()) {
+        for (char i : instrument.getInstrumentNotesList()) {
 
             if (i == 'x') {
                 track.add(makeEvent(instrument.getInstrumentNumber(), true, n));
@@ -96,5 +99,24 @@ public class DrumTrackList {
     // EFFECTS: changes BPM of the drum machine
     public void setBPM(int newBPM) {
         this.bpm = newBPM;
+    }
+
+    // EFFECTS: returns the DrumTrackList as a JSON object
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("bpm", this.bpm);
+        json.put("instruments", instrumentsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns instruments in the tracklist as a JSON array
+    private JSONArray instrumentsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Instrument i : instruments) {
+            jsonArray.put(i.toJson());
+        }
+
+        return jsonArray;
     }
 }

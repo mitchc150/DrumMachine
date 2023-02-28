@@ -1,0 +1,13 @@
+{
+    "instruments": [
+        {
+            "number": 35,
+            "notes": "x-x-"
+        },
+        {
+            "number": 60,
+            "notes": "-x-x"
+        }
+    ],
+    "bpm": 85
+}

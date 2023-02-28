@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +20,8 @@ public class Instrument {
 
     private int instrumentNumber;
     private String instrumentName;
-    private char[] instrumentNotes;
+    private char[] instrumentNotesList;
+    private String instrumentNotes;
 
 
 
@@ -27,7 +30,8 @@ public class Instrument {
     // MODIFIES: this
     // EFFECTS: creates a new Instrument with MIDI number, name and notes to be played
     public Instrument(int instrumentNumber, String instrumentNotes) {
-        this.instrumentNotes = instrumentNotes.toCharArray();
+        this.instrumentNotesList = instrumentNotes.toCharArray();
+        this.instrumentNotes = instrumentNotes;
         this.instrumentNumber = instrumentNumber;
         this.instrumentName = INSTRUMENT_LIST.get(instrumentNumber - 35);
     }
@@ -42,8 +46,13 @@ public class Instrument {
         return this.instrumentName;
     }
 
-    // EFFECTS: returns instrument's notes to be played
-    public char[] getInstrumentNotes() {
+    // EFFECTS: returns instrument's notes to be played, in list form
+    public char[] getInstrumentNotesList() {
+        return this.instrumentNotesList;
+    }
+
+    // EFFECTS: returns instrument's notes to be played, in string form
+    public String getInstrumentNotesString() {
         return this.instrumentNotes;
     }
 
@@ -59,6 +68,15 @@ public class Instrument {
     // MODIFIES: this
     // EFFECTS: changes the instrument's notes to be played
     public void setInstrumentNotes(String newNotes) {
-        this.instrumentNotes = newNotes.toCharArray();
+        this.instrumentNotesList = newNotes.toCharArray();
     }
+
+    // EFFECTS: returns the instrument as a JSON object
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("number", instrumentNumber);
+        json.put("notes", instrumentNotes);
+        return json;
+    }
+
 }
