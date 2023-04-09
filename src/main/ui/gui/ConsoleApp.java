@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import model.*;
 import model.Instrument;
@@ -17,7 +17,7 @@ import java.io.IOException;
 
 // Drum machine application
 // MODELLED ON TELLER APPLICATION FROM edX MODULE
-public class DrumMachineApp {
+public class ConsoleApp {
     private static final List<String> INSTRUMENT_LIST = Arrays.asList("Acoustic Bass Drum",
             "Bass Drum 1", "Side Stick", "Acoustic Snare", "Hand Clap", "Electric Snare",
             "Low Floor Tom", "Closed Hi-Hat", "High Floor Tom", "Pedal Hi-Hat", "Low Tom",
@@ -40,7 +40,7 @@ public class DrumMachineApp {
 
 
     // EFFECTS: builds a new Drum Machine by running the application
-    public DrumMachineApp() throws Exception {
+    public ConsoleApp() throws Exception {
         runDrumMachine();
     }
 

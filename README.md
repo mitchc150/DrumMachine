@@ -23,3 +23,14 @@ find it fun to create new patterns on the app.
 - As a user, I want to be able to change the voice of each instrument (change the MIDI sound being played)
 - As a user, I want to be able to change the tempo of the beat
 - As a user, I want to be able to play the beat and hear it loop repeatedly
+- As a user, I want to have the option to save my work
+- As a user, I want to have the option to load a previously saved beat
+
+## Instructions for Grader
+- To add a new instrument to the track, press the "Add Instrument" button at the bottom of the screen
+- To change the instrument's voice, click the "Change Instrument" button next to the row for a given instrument
+- To change which notes an instrument plays on, click on the JToggleButtons - on means sound, off means no sound
+- To play the beat, press "Play"
+- The visual component of the project is the image of the drum machine and drum kit to the right hand side of the screen
+- To save the file, press "Save" at the bottom
+- To load the most recent saved file, press "Load" at the bottom
