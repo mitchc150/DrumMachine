@@ -6,11 +6,8 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.sound.midi.InvalidMidiDataException;
@@ -21,8 +18,6 @@ import javax.swing.*;
 
 // Drum machine GUI application
 public class DrumMachineGui {
-    private static final int INSTRUMENT_DEFAULT = 35;
-
     private JFrame frame;
     private JPanel topPanel;
     private JPanel bottomPanel;
@@ -48,7 +43,7 @@ public class DrumMachineGui {
 
         frame = new JFrame("Drum Machine");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(600, 400));
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLayout(new BorderLayout());
 
         initializeTopPanel();
@@ -62,7 +57,7 @@ public class DrumMachineGui {
     // EFFECTS: creates a new top panel, which will host ToggleButtonRows representing instruments
     private void initializeTopPanel() {
         topPanel = new JPanel(new GridLayout(0, 1, 10, 10));
-        topPanel.setBackground(new Color(46, 49, 49));
+        topPanel.setBackground(new Color(0, 0, 0));
         frame.add(topPanel, BorderLayout.CENTER);
     }
 
@@ -71,6 +66,7 @@ public class DrumMachineGui {
     // image sources:
     //   - drum machine: http://www.generaldiscussion.us/general/808-drum-machines.html
     //   - drum kit: https://purepng.com/photo/10462/objects-primer-drums-kit
+    //   - midi legend: https://computermusicresource.com/GM.Percussion.KeyMap.html
     private void initializeRightPanel() throws IOException {
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         Image image = ImageIO.read(new File("./src/main/ui/gui/drum machine legend.PNG"));
@@ -96,14 +92,14 @@ public class DrumMachineGui {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates a button for us to add new rows/instruments
+    // EFFECTS: creates a button to add new rows/instruments
     private void initializeAddRowButton() {
         JButton addRowButton = new JButton("Add Instrument");
         addRowButton.setBackground(new Color(241, 196, 15));
         addRowButton.setForeground(Color.WHITE);
         addRowButton.setFocusPainted(false);
         addRowButton.setBorderPainted(false);
-        addRowButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        addRowButton.setFont(new Font("Arial", Font.ITALIC, 15));
         addRowButton.setPreferredSize(new Dimension(150, 70));
         addRowButton.addActionListener(e -> addNewRow());
         bottomPanel.add(addRowButton);
@@ -117,7 +113,7 @@ public class DrumMachineGui {
         playButton.setForeground(Color.WHITE);
         playButton.setFocusPainted(false);
         playButton.setBorderPainted(false);
-        playButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        playButton.setFont(new Font("Arial", Font.ITALIC, 15));
         playButton.setPreferredSize(new Dimension(70, 70));
         playButton.addActionListener(e -> {
             try {
@@ -137,7 +133,7 @@ public class DrumMachineGui {
         stopButton.setForeground(Color.WHITE);
         stopButton.setFocusPainted(false);
         stopButton.setBorderPainted(false);
-        stopButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        stopButton.setFont(new Font("Arial", Font.ITALIC, 15));
         stopButton.setPreferredSize(new Dimension(70, 70));
         stopButton.addActionListener(e -> stopButtonClicked());
         bottomPanel.add(stopButton);
@@ -147,11 +143,11 @@ public class DrumMachineGui {
     // EFFECTS: creates a load button
     private void initializeLoadButton() {
         JButton loadButton = new JButton("Load");
-        loadButton.setBackground(new Color(4, 86, 83));
+        loadButton.setBackground(new Color(6, 66, 124));
         loadButton.setForeground(Color.WHITE);
         loadButton.setFocusPainted(false);
         loadButton.setBorderPainted(false);
-        loadButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        loadButton.setFont(new Font("Arial", Font.ITALIC, 15));
         loadButton.setPreferredSize(new Dimension(70, 70));
         loadButton.addActionListener(e -> {
             try {
@@ -171,7 +167,7 @@ public class DrumMachineGui {
         saveButton.setForeground(Color.WHITE);
         saveButton.setFocusPainted(false);
         saveButton.setBorderPainted(false);
-        saveButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        saveButton.setFont(new Font("Arial", Font.ITALIC, 15));
         saveButton.setPreferredSize(new Dimension(70, 70));
         saveButton.addActionListener(e -> {
             try {
@@ -186,7 +182,8 @@ public class DrumMachineGui {
     // MODIFIES: this
     // EFFECTS: adds a new row to the screen
     private void addNewRow() {
-        ToggleButtonRow row = new ToggleButtonRow();
+        ToggleButtonRow row = new ToggleButtonRow(this);
+        row.changeInstrumentNumber();
         topPanel.add(row);
         topPanel.revalidate();
         toggleButtonRows.add(row);
@@ -223,12 +220,13 @@ public class DrumMachineGui {
         topPanel.repaint();
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, toggleButtonRows
     // EFFECTS: loads from a saved JSON file
     private void load() throws Exception {
         deleteAllRows();
         tracks = jsonReader.read();
         updateToggleButtons();
+
     }
 
     // MODIFIES: this
@@ -245,8 +243,10 @@ public class DrumMachineGui {
         deleteAllRows();
         for (int i = 0; i < tracks.getInstruments().size(); i++) {
             String buttonString = tracks.getInstruments().get(i).getInstrumentNotesString();
-            ToggleButtonRow newRow = new ToggleButtonRow();
+            int instrumentNumber = tracks.getInstruments().get(i).getInstrumentNumber();
+            ToggleButtonRow newRow = new ToggleButtonRow(this);
             topPanel.add(newRow);
+            newRow.setInstrumentNumber(instrumentNumber);
             toggleButtonRows.add(newRow);
             newRow.updateButtons(buttonString);
         }
@@ -273,136 +273,8 @@ public class DrumMachineGui {
         sequencer.setSequence(tracks.getSequence());
     }
 
-    // Represents the row of JToggleButtons used to change what the instrument plays
-    private class ToggleButtonRow extends JPanel {
-        private final List<String> instrumentList = Arrays.asList("Acoustic Bass Drum",
-                "Bass Drum 1", "Side Stick", "Acoustic Snare", "Hand Clap", "Electric Snare",
-                "Low Floor Tom", "Closed Hi-Hat", "High Floor Tom", "Pedal Hi-Hat", "Low Tom",
-                "Open Hi-Hat", "Low Mid-Tom", "Hi-Mid Tom", "Crash Cymbal 1", "High Tom", "Ride Cymbal 1",
-                "Chinese Cymbal", "Ride Bell", "Tambourine", "Splash Cymbal", "Cowbell",
-                "Crash Cymbal 2", "Vibraslap", "Ride Cymbal 2", "Hi Bongo", "Low Bongo",
-                "Mute Hi Conga", "Open Hi Conga", "Low Conga", "High Timbale", "Low Timbale",
-                "High Agogo", "Low Agogo", "Cabasa", "Maracas", "Short Whistle", "Long Whistle",
-                "Short Guiro", "Long Guiro", "Claves", "Hi Wood Block", "Low Wood Block",
-                "Mute Cuica", "Open Cuica", "Mute Triangle", "Open Triangle");
-
-        private static final int BUTTON_WIDTH = 60;
-        private static final int BUTTON_HEIGHT = 60;
-        private static final int ROW_HEIGHT = 80;
-
-        private Color backgroundColor = new Color(46, 49, 49);
-        private Color foregroundColor = Color.WHITE;
-
-        private int instrumentNumber;
-        private List<JToggleButton> toggleButtons;
-        private JButton changeInstrumentButton;
-        private JButton removeButton;
-        private JLabel instrumentName;
-
-        // MODIFIES: this
-        // EFFECTS: creates an empty ToggleButtonRow with the default instrument and no notes selected to play
-        public ToggleButtonRow() {
-            instrumentNumber = INSTRUMENT_DEFAULT;
-            toggleButtons = new ArrayList<>();
-
-            setPreferredSize(new Dimension(400, ROW_HEIGHT));
-            setBackground(backgroundColor);
-            setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-            initializeInstrumentName();
-            initializeToggleButtonRow();
-            initializeRemoveButton();
-            initializeChangeInstrumentButton();
-        }
-
-        // MODIFIES: this
-        // EFFECTS: creates a JLabel to display the instrument's name
-        public void initializeInstrumentName() {
-            instrumentName = new JLabel(instrumentList.get(instrumentNumber - 35));
-            instrumentName.setForeground(foregroundColor);
-            instrumentName.setAlignmentX(Component.CENTER_ALIGNMENT);
-            instrumentName.setFont(new Font("Arial", Font.PLAIN, 15));
-            instrumentName.setPreferredSize(new Dimension(200, instrumentName.getPreferredSize().height));
-            add(instrumentName);
-        }
-
-        // MODIFIES: this
-        // EFFECTS: creates a row of 8 toggle buttons
-        public void initializeToggleButtonRow() {
-            for (int i = 0; i < 8; i++) {
-                JToggleButton toggleButton = new JToggleButton("-");
-                toggleButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-                toggleButton.setBackground(backgroundColor);
-                toggleButton.setForeground(foregroundColor);
-                add(toggleButton);
-                toggleButtons.add(toggleButton);
-            }
-        }
-
-        // MODIFIES: this
-        // EFFECTS: creates a button to remove the row/instrument
-        public void initializeRemoveButton() {
-            removeButton = new JButton("Remove");
-            removeButton.setBackground(new Color(105, 15, 241));
-            removeButton.setForeground(foregroundColor);
-            removeButton.setFocusPainted(false);
-            removeButton.setBorderPainted(false);
-            removeButton.setFont(new Font("Arial", Font.PLAIN, 12));
-            removeButton.setPreferredSize(new Dimension(120, 30));
-            removeButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    removeRow(ToggleButtonRow.this);
-                }
-            });
-            add(removeButton);
-        }
-
-        // MODIFIES: this
-        // EFFECTS: creates a button to change the instrument
-        public void initializeChangeInstrumentButton() {
-            changeInstrumentButton = new JButton("Change Instrument");
-            changeInstrumentButton.setBackground(new Color(241, 15, 203));
-            changeInstrumentButton.setForeground(foregroundColor);
-            changeInstrumentButton.setFocusPainted(false);
-            changeInstrumentButton.setBorderPainted(false);
-            changeInstrumentButton.setFont(new Font("Arial", Font.PLAIN, 12));
-            changeInstrumentButton.setPreferredSize(new Dimension(150, 30));
-            changeInstrumentButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    int newInstrumentNumber = Integer.parseInt(
-                            JOptionPane.showInputDialog(frame, "Enter new instrument number:"));
-                    instrumentNumber = newInstrumentNumber;
-                    instrumentName.setText(instrumentList.get(instrumentNumber - 35));
-                    validate();
-                    repaint();
-                }
-            });
-            add(changeInstrumentButton);
-        }
-
-        // EFFECTS: returns the instrument number of the given row
-        public int getInstrumentNumber() {
-            return instrumentNumber;
-        }
-
-        // REQUIRES: buttonString is a string of length 8, made of 'x' or '-' characters
-        // MODIFIES: this
-        // EFFECTS: given a string, creates the button row which represents it
-        public void updateButtons(String buttonString) {
-            for (int i = 0; i < buttonString.length(); i++) {
-                char c = buttonString.charAt(i);
-                toggleButtons.get(i).setSelected(c == 'x');
-            }
-        }
-
-        // EFFECTS: returns the string which represents a given toggle button row
-        public String getToggleButtonString() {
-            StringBuilder sb = new StringBuilder();
-            for (JToggleButton toggleButton : toggleButtons) {
-                sb.append(toggleButton.isSelected() ? "x" : "-");
-            }
-            return sb.toString();
-        }
+    // EFFECTS: returns the frame
+    public JFrame getFrame() {
+        return frame;
     }
 }

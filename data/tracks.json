@@ -1,44 +1,20 @@
 {
     "instruments": [
         {
-            "number": 55,
-            "notes": "-x-x-x--"
-        },
-        {
-            "number": 45,
-            "notes": "x-x-x---"
-        },
-        {
-            "number": 66,
-            "notes": "--x-x-x-"
-        },
-        {
             "number": 35,
-            "notes": "-x-x-x--"
+            "notes": "x-x-x-x-"
         },
         {
-            "number": 35,
-            "notes": "x-x-x---"
+            "number": 38,
+            "notes": "-xx-xx--"
         },
         {
-            "number": 35,
-            "notes": "--x-x-x-"
+            "number": 56,
+            "notes": "------xx"
         },
         {
-            "number": 35,
-            "notes": "-x-x-x--"
-        },
-        {
-            "number": 35,
-            "notes": "x-x-x---"
-        },
-        {
-            "number": 35,
-            "notes": "--x-x-x-"
-        },
-        {
-            "number": 35,
-            "notes": "-x-x-x--"
+            "number": 58,
+            "notes": "x-x-x-x-"
         }
     ],
     "bpm": 90
