@@ -200,7 +200,7 @@ public class ToggleButtonRow extends JPanel {
         return sb.toString();
     }
 
-    // get the instrument represented by this row
+    // EFFECTS: returns the instrument represented by this row
     public Instrument getInstrument() {
         return this.instrument;
     }
