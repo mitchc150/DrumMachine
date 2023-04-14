@@ -1,7 +1,9 @@
 package ui.gui;
 
+import model.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ToggleButtonRow extends JPanel {
     private int instrumentNumber;
     private final List<JToggleButton> toggleButtons;
     private JLabel instrumentName;
+    private Instrument instrument;
 
     // MODIFIES: this
     // EFFECTS: creates an empty ToggleButtonRow with the selected instrument and no notes to play
@@ -41,6 +44,7 @@ public class ToggleButtonRow extends JPanel {
 
         // set the instrument number as default to avoid errors
         this.instrumentNumber = INSTRUMENT_DEFAULT;
+        instrument = new Instrument(this.instrumentNumber, "--------");
 
         // create the list which will hold all of our ToggleButtons; necessary for looping
         toggleButtons = new ArrayList<>();
@@ -84,6 +88,9 @@ public class ToggleButtonRow extends JPanel {
             toggleButton.setBackground(BUTTON_COLOR);
             toggleButton.setForeground(FONT_COLOR);
             toggleButton.setFocusPainted(false);
+
+            // Set JToggleButton to change instrument notes when clicked
+            toggleButton.addActionListener(e -> instrument.setInstrumentNotes(this.getToggleButtonString()));
 
             // add the ToggleButton to the row and to the list of toggle buttons
             add(toggleButton);
@@ -153,6 +160,7 @@ public class ToggleButtonRow extends JPanel {
     public void setInstrumentNumber(int instrumentNumber) {
         // set the field accordingly
         this.instrumentNumber = instrumentNumber;
+        instrument.setInstrument(instrumentNumber);
 
         // set the text to make it match
         instrumentName.setText(instrumentList.get(instrumentNumber - 35));
@@ -190,5 +198,10 @@ public class ToggleButtonRow extends JPanel {
             }
         }
         return sb.toString();
+    }
+
+    // get the instrument represented by this row
+    public Instrument getInstrument() {
+        return this.instrument;
     }
 }

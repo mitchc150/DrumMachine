@@ -1,21 +1,7 @@
 {
-    "instruments": [
-        {
-            "number": 35,
-            "notes": "x-x-x-x-"
-        },
-        {
-            "number": 38,
-            "notes": "-xx-xx--"
-        },
-        {
-            "number": 56,
-            "notes": "------xx"
-        },
-        {
-            "number": 58,
-            "notes": "x-x-x-x-"
-        }
-    ],
+    "instruments": [{
+        "number": 55,
+        "notes": "--------"
+    }],
     "bpm": 90
 }

@@ -34,6 +34,7 @@ public class Instrument {
         this.instrumentNotes = instrumentNotes;
         this.instrumentNumber = instrumentNumber;
         this.instrumentName = INSTRUMENT_LIST.get(instrumentNumber - 35);
+        EventLog.getInstance().logEvent(new Event("New instrument created"));
     }
 
     // EFFECTS: returns instrument's MIDI code number
@@ -62,6 +63,8 @@ public class Instrument {
     public void setInstrument(int newNumber) {
         this.instrumentNumber = newNumber;
         this.instrumentName = INSTRUMENT_LIST.get(newNumber - 35);
+
+        EventLog.getInstance().logEvent(new Event("Set instrument number to " + newNumber));
     }
 
     // REQUIRES: newNotes consists only of 'x' and '-'
@@ -69,6 +72,8 @@ public class Instrument {
     // EFFECTS: changes the instrument's notes to be played
     public void setInstrumentNotes(String newNotes) {
         this.instrumentNotesList = newNotes.toCharArray();
+        this.instrumentNotes = newNotes;
+        EventLog.getInstance().logEvent(new Event("Set instrument notes to " + newNotes));
     }
 
     // EFFECTS: returns the instrument as a JSON object
@@ -76,6 +81,7 @@ public class Instrument {
         JSONObject json = new JSONObject();
         json.put("number", instrumentNumber);
         json.put("notes", instrumentNotes);
+
         return json;
     }
 

@@ -59,6 +59,10 @@ public class DrumTrackList {
             }
             n += 1;
         }
+
+        EventLog.getInstance().logEvent(new Event("Added instrument number "
+                + instrument.getInstrumentNumber() + " playing " + instrument.getInstrumentNotesString() + " to the"
+                + " track list"));
     }
 
     // REQUIRES: 0 <= instrumentNumber <= instruments.length()
@@ -69,6 +73,8 @@ public class DrumTrackList {
         tracks.remove(instrumentNumber);
         instruments.remove(instrumentNumber);
         sequence.deleteTrack(track);
+
+        EventLog.getInstance().logEvent(new Event("Removed instrument number " + instrumentNumber));
     }
 
     // REQUIRES: 35 <= instrumentNumber <= 81
@@ -99,6 +105,8 @@ public class DrumTrackList {
     // EFFECTS: changes BPM of the drum machine
     public void setBPM(int newBPM) {
         this.bpm = newBPM;
+
+        EventLog.getInstance().logEvent(new Event("Set bpm to " + this.getBPM()));
     }
 
     // EFFECTS: returns the DrumTrackList as a JSON object
@@ -106,6 +114,7 @@ public class DrumTrackList {
         JSONObject json = new JSONObject();
         json.put("bpm", this.bpm);
         json.put("instruments", instrumentsToJson());
+        EventLog.getInstance().logEvent(new Event("Saved file to JSON"));
         return json;
     }
 
@@ -118,5 +127,15 @@ public class DrumTrackList {
         }
 
         return jsonArray;
+    }
+
+    // EFFECTS: records that the DrumTrackList is being played
+    public static void play() {
+        EventLog.getInstance().logEvent(new Event("Playing..."));
+    }
+
+    // EFFECTS: records that the DrumTrackList has been stopped
+    public static void stop() {
+        EventLog.getInstance().logEvent(new Event("Stopped playing"));
     }
 }

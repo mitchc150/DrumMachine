@@ -1,6 +1,8 @@
 package ui.gui;
 
 import model.DrumTrackList;
+import model.Event;
+import model.EventLog;
 import model.Instrument;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -8,6 +10,7 @@ import persistence.JsonWriter;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.sound.midi.InvalidMidiDataException;
@@ -52,7 +55,7 @@ public class DrumMachineGui {
 
         // Set up new frame with border layout
         frame = new JFrame("Drum Machine");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLayout(new BorderLayout());
 
@@ -61,6 +64,20 @@ public class DrumMachineGui {
         initializeRightPanel();
         initializeBottomPanel();
 
+        // Modify exit behavior
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    for (Iterator<Event> it = EventLog.getInstance().iterator(); it.hasNext(); ) {
+                        // Print out the event
+                        Event e = it.next();
+                        System.out.println(e);
+                    }
+
+                    // Then exit the program
+                    System.exit(0);
+                }
+        });
         // Make frame visible
         frame.setVisible(true);
     }
@@ -138,7 +155,13 @@ public class DrumMachineGui {
         addRowButton.setPreferredSize(new Dimension(150, 70));
 
         // lambda action listener for addNewRow function defined elsewhere
-        addRowButton.addActionListener(e -> addNewRow());
+        addRowButton.addActionListener(e -> {
+            try {
+                addNewRow();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         // add the button to the bottom panel
         bottomPanel.add(addRowButton);
@@ -252,6 +275,8 @@ public class DrumMachineGui {
                 save();
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
         });
         bottomPanel.add(saveButton);
@@ -259,7 +284,7 @@ public class DrumMachineGui {
 
     // MODIFIES: this
     // EFFECTS: adds a new row to the screen
-    private void addNewRow() {
+    private void addNewRow() throws Exception {
         // create a new row representing an instrument which will be situated on this gui
         ToggleButtonRow row = new ToggleButtonRow(this);
 
@@ -281,28 +306,24 @@ public class DrumMachineGui {
         // stop the sequencer if it's already playing, so that we don't have multiple tracks playing over each other
         sequencer.stop();
 
-        // create a new drum track list with default bpm
-        tracks = new DrumTrackList(DEFAULT_BPM);
+        // reload the tracks to avoid MIDI funkiness
+        tracks = new DrumTrackList(this.DEFAULT_BPM);
 
-        // create a new instrument for each toggle button row, where
-        //   a) instrumentNumber is from the row's local data;
-        //   b) instrumentNotes is a string built of "x" and "-" determined by whether a given row's buttons are
-        //      pressed or not
-        for (ToggleButtonRow row : toggleButtonRows) {
-            Instrument instrument = new Instrument(row.getInstrumentNumber(),
-                    row.getToggleButtonString());
-            tracks.addTrack(instrument);
+        for (ToggleButtonRow row: toggleButtonRows) {
+            tracks.addTrack(row.getInstrument());
         }
 
         // load the new track list into the sequencer and begin playing
         initSequencer(tracks);
         sequencer.start();
+        DrumTrackList.play();
     }
 
     // MODIFIES: this
     // EFFECTS: stops playback
     private void stopButtonClicked() {
         sequencer.stop();
+        DrumTrackList.stop();
     }
 
     // MODIFIES: this
@@ -329,7 +350,14 @@ public class DrumMachineGui {
 
     // MODIFIES: this
     // EFFECTS: saves to a JSON file
-    private void save() throws FileNotFoundException {
+    private void save() throws Exception {
+        // reload the tracks to avoid MIDI funkiness
+        tracks = new DrumTrackList(this.DEFAULT_BPM);
+
+        for (ToggleButtonRow row: toggleButtonRows) {
+            tracks.addTrack(row.getInstrument());
+        }
+
         jsonWriter.open();
         jsonWriter.write(tracks);
         jsonWriter.close();
