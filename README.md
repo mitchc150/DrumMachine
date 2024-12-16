@@ -16,16 +16,6 @@ interest to me because I am a musician, and I find it useful to have drum accomp
 me on rhythm, to fill out the sound and to help with songwriting. I also really enjoy playing with rhythms and I will 
 find it fun to create new patterns on the app.
 
-## User Stories
-- As a user, I want to be able to add an instrument with its notes to be played to the track
-- As a user, I want to be able to delete an instrument from the track
-- As a user, I want to be able to modify the notes being played each instrument
-- As a user, I want to be able to change the voice of each instrument (change the MIDI sound being played)
-- As a user, I want to be able to change the tempo of the beat
-- As a user, I want to be able to play the beat and hear it loop repeatedly
-- As a user, I want to have the option to save my work
-- As a user, I want to have the option to load a previously saved beat
-
 ## Instructions
 - To add a new instrument to the track, press the "Add Instrument" button at the bottom of the screen
 - To change the instrument's voice, click the "Change Instrument" button next to the row for a given instrument
